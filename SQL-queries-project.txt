@@ -1,0 +1,63 @@
+/* 1st Query - query used to get TOP 10 genre according to money spent */
+SELECT G.Name Genre, ROUND(SUM(L.UnitPrice),2) AS Money_Spent
+FROM Invoice I 
+JOIN InvoiceLine L
+ON I.InvoiceId = L.InvoiceId
+JOIN Track T
+ON L.TrackId = T.TrackId
+JOIN Genre G 
+ON G.GenreId = T.GenreId
+GROUP BY G.Name
+ORDER BY SUM(L.UnitPrice) DESC
+LIMIT 10;
+
+
+
+/* 2nd Query - query used to get TOP 5 artist */
+SELECT A.Name, ROUND(SUM(L.UnitPrice),2) AS Total_units_price , COUNT(T.TrackId) AS Tracks
+from InvoiceLine L
+JOIN Track T
+ON T.TrackId = L.TrackId
+JOIN Album Al 
+ON Al.AlbumId = T.AlbumId
+JOIN Artist A
+ON A.ArtistId = Al.ArtistId
+GROUP BY A.Name
+ORDER BY Total_units_price DESC
+LIMIT 5;
+
+
+/* 3rd Query - query used to get TOP 10 customers */
+SELECT C.FirstName||" "||C.LastName AS Name, SUM(L.UnitPrice) AS Purchase , G.Name AS Favoutite_Genre
+FROM Customer C
+JOIN Invoice I 
+ON I.CUSTOMERID = C.CUSTOMERID
+JOIN InvoiceLine L 
+ON L.INVOICEID = I.INVOICEID
+JOIN Track T 
+ON T.TRACKID = L.TRACKID
+JOIN Genre G 
+ON G.GENREID = T.GENREID
+GROUP BY 1
+ORDER BY 2 DESC
+Limit 10;
+
+
+
+/* 4th Query - query used to get TOP tracks */
+SELECT T.Name ||" By "|| AR.Name AS Song_by_Name, SUM(L.Quantity * L.UnitPrice) AS Invoice_Total
+FROM Invoice I
+JOIN InvoiceLine L
+ON I.InvoiceId = L.InvoiceId
+JOIN Track T
+ON L.TrackId = T.TrackId
+JOIN Album A
+ON T.AlbumId = A.AlbumId
+JOIN Artist AR
+ON A.ArtistId = AR.ArtistId
+GROUP BY L.TrackId
+ORDER BY Invoice_Total DESC
+LIMIT 10;
+
+
+
